@@ -1,26 +1,19 @@
-// src/app/admin/page.tsx
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { redirect } from "next/navigation";
-import ProductList from "../../ProductList";
+// src/app/admin/edit-product/[id]/page.tsx
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/prisma";
+import EditProductForm from "@/components/EditProductForm";
 
-export default async function AdminPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
-
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/products`, {
-    cache: "no-store",
+export default async function EditProductPage({ params }: { params: { id: string } }) {
+  const product = await prisma.product.findUnique({
+    where: { id: Number(params.id) },
   });
-  const products = await res.json();
+
+  if (!product) return notFound();
 
   return (
-    <main className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Painel Administrativo</h1>
-      <p className="mb-4">
-        Bem-vindo, {session.user?.name || session.user?.email}!
-      </p>
-
-      <ProductList products={products} />
+    <main className="p-6 max-w-xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Editar Produto</h1>
+      <EditProductForm product={product} />
     </main>
   );
 }

@@ -2,8 +2,29 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function ProductList({ products }: { products: any[] }) {
+  const [productList, setProductList] = useState(products);
+  const router = useRouter();
+
+  const handleDelete = async (id: number) => {
+    if (confirm("Tem certeza que deseja excluir este produto?")) {
+      const res = await fetch(`/api/products/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        // Atualiza a lista localmente (opcional)
+        setProductList(productList.filter((p) => p.id !== id));
+        // Atualiza a página e revalida os dados do servidor
+        router.refresh();
+      } else {
+        alert("Erro ao excluir produto.");
+      }
+    }
+  };
+
   return (
     <div>
       <Link
@@ -32,7 +53,7 @@ export default function ProductList({ products }: { products: any[] }) {
                 Editar
               </Link>
               <button
-                onClick={() => alert("Funcionalidade excluir em breve")}
+                onClick={() => handleDelete(product.id)}
                 className="text-red-600 hover:underline text-sm"
               >
                 Excluir
