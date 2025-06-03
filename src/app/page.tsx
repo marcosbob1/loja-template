@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 
+
 interface Product {
   id: number;
   name: string;
   price: number;
-  image: string;
+  imageUrl: string;
 }
 
 export default function Home() {
@@ -110,7 +111,7 @@ export default function Home() {
               className="bg-white shadow p-4 rounded-xl flex flex-col items-center gap-2"
             >
               <img
-                src={product.image}
+                src={product.imageUrl}
                 alt={product.name}
                 className="w-full h-32 object-cover rounded-lg"
               />

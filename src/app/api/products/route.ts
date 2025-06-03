@@ -1,28 +1,33 @@
 import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
+// GET: lista todos os produtos
 export async function GET() {
-  const products = [
-    {
-      id: 1,
-      name: 'Frigideira Antiaderente',
-      price: 89.90,
-      image: '/produtos/frigideira.jpg', // ou uma URL externa
-    },
-    {
-      id: 2,
-      name: 'Tampas de Vidro',
-      price: 149.90,
-      image: '/produtos/tampa.jpg',
-    },
-    {
-      id: 3,
-      name: 'Conjunto de Panelas',
-      price: 299.90,
-      image: '/produtos/conjunto.jpg',
-    },
-  ]
+  const products = await prisma.product.findMany()
+  return NextResponse.json(products)
+}
 
-  return Response.json(products)
+// POST: cadastra um novo produto
+export async function POST(request: Request) {
+  try {
+    const { name, price, imageUrl } = await request.json()
+
+    if (!name || !price || !imageUrl) {
+      return NextResponse.json({ error: 'Dados obrigatórios faltando.' }, { status: 400 })
+    }
+
+    const product = await prisma.product.create({
+      data: {
+        name,
+        price,
+        imageUrl,
+      },
+    })
+
+    return NextResponse.json(product, { status: 201 })
+  } catch (error) {
+    return NextResponse.json({ error: 'Erro ao cadastrar produto.' }, { status: 500 })
+  }
 }
 
 
