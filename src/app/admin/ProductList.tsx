@@ -25,14 +25,14 @@ export default function ProductList({ products }: { products: any[] }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Produtos cadastrados</h2>
+      <div className="flex flex-col gap-4 mb-4">
         <Link
           href="/admin/create-product"
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+          className="self-start px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
         >
           + Adicionar Produto
         </Link>
+        <h2 className="text-xl font-semibold">Produtos Cadastrados</h2>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -47,11 +47,15 @@ export default function ProductList({ products }: { products: any[] }) {
               className="w-full h-40 object-cover rounded-md mb-3"
             />
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-gray-800">{product.name}</h3>
-              <p className="text-sm text-gray-600">R$ {product.price.toFixed(2)}</p>
+              <h3 className="text-lg font-bold text-gray-800">
+                {product.name}
+              </h3>
+              <p className="text-sm text-gray-600">
+                R$ {product.price.toFixed(2)}
+              </p>
             </div>
 
-            <div className="flex justify-between items-center mt-4">
+            <div className="flex items-center gap-4 mt-4">
               <Link
                 href={`/admin/edit-product/${product.id}`}
                 className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"

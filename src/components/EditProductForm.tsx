@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Save, Trash2, ArrowLeft } from "lucide-react";
 
 interface EditProductFormProps {
   product: {
@@ -21,6 +22,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       const res = await fetch(`/api/products/${product.id}`, {
         method: "PUT",
@@ -44,7 +46,6 @@ export default function EditProductForm({ product }: EditProductFormProps) {
         const res = await fetch(`/api/products/${product.id}`, {
           method: "DELETE",
         });
-
         if (!res.ok) throw new Error("Erro ao excluir produto");
 
         alert("Produto excluído com sucesso!");
@@ -57,60 +58,73 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Ex: Petisco Canino"
-        />
-      </div>
+    <main className="p-6 max-w-2xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6 text-center">Editar Produto</h1>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Preço (R$)</label>
-        <input
-          type="number"
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Ex: 29.99"
-          step="0.01"
-          min="0"
-        />
-      </div>
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6 bg-white p-8 rounded-2xl shadow-lg border"
+      >
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">URL da Imagem</label>
-        <input
-          type="text"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="https://exemplo.com/imagem.jpg"
-        />
-      </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Preço (R$)</label>
+          <input
+            type="number"
+            value={price}
+            step="0.01"
+            onChange={(e) => setPrice(Number(e.target.value))}
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      {error && <p className="text-red-600">{error}</p>}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">URL da Imagem</label>
+          <input
+            type="text"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      <div className="flex justify-between gap-4 mt-6">
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition w-full"
-        >
-          Salvar Alterações
-        </button>
+        {error && <p className="text-red-600">{error}</p>}
 
-        <button
-          type="button"
-          onClick={handleDelete}
-          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition w-full"
-        >
-          Excluir Produto
-        </button>
-      </div>
-    </form>
+        <div className="flex justify-between items-center mt-6 flex-wrap gap-4">
+          <div className="flex gap-4">
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center gap-2 transition"
+            >
+              <Save size={15} /> Salvar Alterações
+            </button>
+
+            <button
+              type="button"
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-6 rounded-xl flex items-center gap-2 transition"
+              onClick={handleDelete}
+            >
+              <Trash2 size={15} /> Excluir Produto
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => router.push("/admin")}
+            className="text-gray-600 hover:text-gray-800 text-sm flex items-center gap-1"
+          >
+            <ArrowLeft size={16} /> Voltar
+          </button>
+        </div>
+      </form>
+    </main>
   );
 }
