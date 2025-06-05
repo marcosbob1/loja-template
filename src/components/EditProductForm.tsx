@@ -16,12 +16,11 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(product.price);
   const [imageUrl, setImageUrl] = useState(product.imageUrl);
-   const [error, setError] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       const res = await fetch(`/api/products/${product.id}`, {
         method: "PUT",
@@ -29,9 +28,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
         body: JSON.stringify({ name, price, imageUrl }),
       });
 
-      if (!res.ok) {
-        throw new Error("Erro ao atualizar produto");
-      }
+      if (!res.ok) throw new Error("Erro ao atualizar produto");
 
       alert("Produto atualizado com sucesso!");
       router.push("/admin");
@@ -47,9 +44,9 @@ export default function EditProductForm({ product }: EditProductFormProps) {
         const res = await fetch(`/api/products/${product.id}`, {
           method: "DELETE",
         });
-        if (!res.ok) {
-          throw new Error("Erro ao excluir produto");
-        }
+
+        if (!res.ok) throw new Error("Erro ao excluir produto");
+
         alert("Produto excluído com sucesso!");
         router.push("/admin");
       } catch (err) {
@@ -60,52 +57,60 @@ export default function EditProductForm({ product }: EditProductFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded shadow">
       <div>
-        <label className="block text-sm font-medium text-gray-700">Nome</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Ex: Petisco Canino"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Preço</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Preço (R$)</label>
         <input
           type="number"
           value={price}
-          step="0.01"
           onChange={(e) => setPrice(Number(e.target.value))}
-          className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Ex: 29.99"
+          step="0.01"
+          min="0"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">URL da Imagem</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">URL da Imagem</label>
         <input
           type="text"
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
-          className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="https://exemplo.com/imagem.jpg"
         />
       </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Salvar Alterações
-      </button>
-       <button
+      {error && <p className="text-red-600">{error}</p>}
+
+      <div className="flex justify-between gap-4 mt-6">
+        <button
+          type="submit"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition w-full"
+        >
+          Salvar Alterações
+        </button>
+
+        <button
           type="button"
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
           onClick={handleDelete}
+          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded-lg transition w-full"
         >
           Excluir Produto
         </button>
-      {error && <p className="text-red-600">{error}</p>}
+      </div>
     </form>
   );
 }

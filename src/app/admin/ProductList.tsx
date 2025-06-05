@@ -1,9 +1,9 @@
-// src/app/admin/ProductList.tsx
 "use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
 
 export default function ProductList({ products }: { products: any[] }) {
   const [productList, setProductList] = useState(products);
@@ -15,9 +15,7 @@ export default function ProductList({ products }: { products: any[] }) {
         method: "DELETE",
       });
       if (res.ok) {
-        // Atualiza a lista localmente (opcional)
         setProductList(productList.filter((p) => p.id !== id));
-        // Atualiza a página e revalida os dados do servidor
         router.refresh();
       } else {
         alert("Erro ao excluir produto.");
@@ -26,36 +24,46 @@ export default function ProductList({ products }: { products: any[] }) {
   };
 
   return (
-    <div>
-      <Link
-        href="/admin/create-product"
-        className="inline-block mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        Adicionar Produto
-      </Link>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">Produtos cadastrados</h2>
+        <Link
+          href="/admin/create-product"
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        >
+          + Adicionar Produto
+        </Link>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {products.map((product) => (
-          <div key={product.id} className="bg-white p-4 rounded shadow">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {productList.map((product) => (
+          <div
+            key={product.id}
+            className="bg-white rounded-xl shadow hover:shadow-md transition p-4 flex flex-col"
+          >
             <img
               src={product.imageUrl}
               alt={product.name}
-              className="w-full h-32 object-cover rounded"
+              className="w-full h-40 object-cover rounded-md mb-3"
             />
-            <h3 className="text-lg font-semibold mt-2">{product.name}</h3>
-            <p className="text-sm text-gray-700">R$ {product.price.toFixed(2)}</p>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-gray-800">{product.name}</h3>
+              <p className="text-sm text-gray-600">R$ {product.price.toFixed(2)}</p>
+            </div>
 
-            <div className="flex gap-2 mt-3">
+            <div className="flex justify-between items-center mt-4">
               <Link
                 href={`/admin/edit-product/${product.id}`}
-                className="text-blue-600 hover:underline text-sm"
+                className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
               >
+                <Pencil className="w-4 h-4" />
                 Editar
               </Link>
               <button
                 onClick={() => handleDelete(product.id)}
-                className="text-red-600 hover:underline text-sm"
+                className="flex items-center gap-1 text-red-600 hover:text-red-800 text-sm"
               >
+                <Trash2 className="w-4 h-4" />
                 Excluir
               </button>
             </div>
